@@ -1,0 +1,20 @@
+export type YahooFundamentalResponse = {
+  date: Date;
+  totalRevenue?: number;
+  netIncome?: number;
+  operatingCashFlow?: number;
+  capitalExpenditure?: number;
+  freeCashFlow?: number;
+  totalAssets?: number;
+  currentAssets?: number;
+  totalNonCurrentAssets?: number;
+  cashFinancial?: number;
+  totalLiabilitiesNetMinorityInterest?: number;
+  currentDebt?: number;
+  longTermDebt?: number;
+  commonStockEquity?: number;
+  stockholdersEquity?: number;
+  dilutedEPS?: number;
+  EBITDA?: number;
+  investedCapital?: number;
+};
