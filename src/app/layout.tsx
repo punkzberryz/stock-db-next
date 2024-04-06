@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Kanit as FontSans } from "next/font/google";
 
-import "./globals.css";
+import "@/components/globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ThemeToggleButton from "@/components/theme/theme-toggle-button";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
+import Navbar from "@/components/Navbar/navbar";
 
 const fontSans = FontSans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -32,10 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <MaxWidthWrapper>
-            {children}
-            <ThemeToggleButton />
-          </MaxWidthWrapper>
+          <Navbar />
+          {children}
+          <ThemeToggleButton />
         </ThemeProvider>
       </body>
     </html>

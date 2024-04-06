@@ -27,3 +27,7 @@ export const catchRouteErrorHelper = (err: unknown, route: string) => {
     { status: 500, statusText: "ServerError" }
   );
 };
+
+export const divideByMillion = (num?: number) => {
+  return num ? num / 1000000 : undefined;
+};
