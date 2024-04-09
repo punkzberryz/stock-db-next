@@ -26,34 +26,33 @@ export const GET = async (
       type,
     })) as any as YahooFundamentalResponse[];
     //normalize to per millions for big numbers
-    const resp = results.map(
-      (result) =>
-        ({
-          ...result,
-          revenue: divideByMillion(result.totalRevenue),
-          netIncome: divideByMillion(result.netIncome),
-          operatingCashFlow: divideByMillion(result.operatingCashFlow),
-          capitalExpenditure: divideByMillion(result.capitalExpenditure),
-          freeCashFlow: divideByMillion(result.freeCashFlow),
-          totalAssets: divideByMillion(result.totalAssets),
-          nonCurrentAssets: divideByMillion(result.totalNonCurrentAssets),
-          cashFinancial: divideByMillion(result.cashFinancial),
-          totalLiabilities: divideByMillion(
-            result.totalLiabilitiesNetMinorityInterest
-          ),
-          currentDebt: divideByMillion(result.currentDebt),
-          longTermDebt: divideByMillion(result.longTermDebt),
-          commonStockEquity: divideByMillion(result.commonStockEquity),
-          stockholdersEquity: divideByMillion(result.stockholdersEquity),
-          dilutedEPS: result.dilutedEPS,
-          ebitda: divideByMillion(result.EBITDA),
-          investedCapital: divideByMillion(result.investedCapital),
-          currentAssets: divideByMillion(result.currentAssets),
-        } as Fundamental)
-    );
+    const resp = results.map((result) => makeFundamental(result));
 
     return NextResponse.json(resp);
   } catch (err) {
     return catchRouteErrorHelper(err, "api/stock/[ticker]/fundamental");
   }
+};
+
+const makeFundamental = (result: YahooFundamentalResponse): Fundamental => {
+  return {
+    date: result.date,
+    revenue: result.totalRevenue,
+    netIncome: result.netIncome,
+    operatingCashFlow: result.operatingCashFlow,
+    capitalExpenditure: result.capitalExpenditure,
+    freeCashFlow: result.freeCashFlow,
+    totalAssets: result.totalAssets,
+    nonCurrentAssets: result.totalNonCurrentAssets,
+    cashFinancial: result.cashFinancial,
+    totalLiabilities: result.totalLiabilitiesNetMinorityInterest,
+    currentDebt: result.currentDebt,
+    longTermDebt: result.longTermDebt,
+    commonStockEquity: result.commonStockEquity,
+    stockholdersEquity: result.stockholdersEquity,
+    dilutedEPS: result.dilutedEPS,
+    ebitda: result.EBITDA,
+    investedCapital: result.investedCapital,
+    currentAssets: result.currentAssets,
+  };
 };

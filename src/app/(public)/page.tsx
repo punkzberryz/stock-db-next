@@ -1,10 +1,5 @@
-import Client from "./client";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="pt-10">
-      <h1>Test yahoofinance</h1>
-      <Client />
-    </div>
-  );
+  redirect("/fundamental");
 }
