@@ -7,10 +7,6 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({ message: "Missing symbol" }, { status: 400 });
   }
   try {
-    // const result = await yahooFinance.quoteSummary(symbol, {
-    //   modules: ["earnings"],
-    // });
-
     const query = symbol;
     const queryOptions = { period1: "2015-01-01", module: "all" };
     const result = await yahooFinance.fundamentalsTimeSeries(query, {

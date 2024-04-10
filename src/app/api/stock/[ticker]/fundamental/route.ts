@@ -1,4 +1,5 @@
 import { catchRouteErrorHelper, divideByMillion } from "@/app/api/lib/helper";
+import { BadRequestError } from "@/lib/error";
 import {
   Fundamental,
   YahooFundamentalResponse,
@@ -26,6 +27,9 @@ export const GET = async (
       type,
     })) as any as YahooFundamentalResponse[];
     //normalize to per millions for big numbers
+    if (!results.length) {
+      throw new BadRequestError("No data found");
+    }
     const resp = results.map((result) => makeFundamental(result));
 
     return NextResponse.json(resp);
