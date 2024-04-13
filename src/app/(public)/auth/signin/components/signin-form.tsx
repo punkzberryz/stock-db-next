@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, useForm } from "react-hook-form";
 import {
@@ -21,6 +21,7 @@ import {
   BadRequestError,
   catchErrorFromServerActionOnClientHelper,
 } from "@/lib/error";
+import { useAuthStore } from "@/hooks/stores/auth/useAuthStore";
 
 const SignInForm = () => {
   const router = useRouter();
