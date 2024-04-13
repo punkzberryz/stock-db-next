@@ -2,11 +2,19 @@ import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import SignOutButton from "./signout-button";
+import { User } from "@prisma/client";
 
 const MePage = async () => {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect("/auth/signin");
+  let user: Awaited<ReturnType<typeof validateRequest>>["user"] = null;
+  try {
+    const resp = await validateRequest();
+    if (!resp.user) {
+      return redirect("/auth/signin");
+    }
+    user = resp.user;
+  } catch (e) {
+    console.error(e);
+    return null;
   }
   return (
     <MaxWidthWrapper>
