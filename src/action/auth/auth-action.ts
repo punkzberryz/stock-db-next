@@ -2,15 +2,10 @@
 import { prismadb } from "@/lib/prismadb";
 import { Argon2id } from "oslo/password";
 import { clearSession, createSession, validateRequest } from "@/lib/auth";
-import {
-  BadRequestError,
-  catchErrorForServerActionHelper,
-  UnauthorizedError,
-} from "@/lib/error";
+import { BadRequestError, catchErrorForServerActionHelper } from "@/lib/error";
 import { generateId } from "lucia";
 import { SignInErrorResponse, SignUpErrorResponse } from "./error-response";
 import { SignInSchema } from "@/app/(public)/auth/signin/components/signin-schema";
-import { User } from "@prisma/client";
 
 export const signUpWithEmailAndPasswordAction = async ({
   displayName,

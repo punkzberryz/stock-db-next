@@ -2,8 +2,6 @@ import { Kanit as FontSans } from "next/font/google";
 import "@/components/globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import ThemeToggleButton from "@/components/theme/theme-toggle-button";
-import Navbar from "@/components/Navbar/navbar";
 import { Toaster } from "react-hot-toast";
 
 const fontSans = FontSans({
@@ -31,9 +29,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
           {children}
-          <ThemeToggleButton />
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>

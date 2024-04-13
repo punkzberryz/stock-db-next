@@ -3,8 +3,12 @@ import { prismaAdapter } from "./prismadb";
 import { User } from "@prisma/client";
 import { cache } from "react";
 import { cookies } from "next/headers";
-const lucia = new Lucia(prismaAdapter, {
+import { NextFetchEvent, NextRequest } from "next/server";
+import { COOKIE_NAME } from "@/middleware";
+
+export const lucia = new Lucia(prismaAdapter, {
   sessionCookie: {
+    name: COOKIE_NAME,
     expires: false,
     attributes: {
       secure: process.env.NODE_ENV === "production",
@@ -53,8 +57,11 @@ export const clearSession = async (sessionId: string) => {
   );
 };
 
-export const validateRequest = cache(async () => {
-  const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+export const validateRequest = cache(async (sessionIdFromAuth?: string) => {
+  let sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+  if (sessionIdFromAuth) {
+    sessionId = sessionIdFromAuth;
+  }
   if (!sessionId) {
     return {
       user: null,
@@ -84,3 +91,12 @@ export const validateRequest = cache(async () => {
   }
   return result;
 });
+
+export const validateRequestMiddleware = async (
+  req: NextRequest,
+  event: NextFetchEvent
+) => {
+  const sessionId = cookies().get(COOKIE_NAME)?.value;
+  console.log(`[validateRequestMiddleware] sessionId: ${sessionId}`);
+  return req;
+};

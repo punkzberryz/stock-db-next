@@ -1,4 +1,4 @@
-import { catchRouteErrorHelper, divideByMillion } from "@/app/api/lib/helper";
+import { catchRouteErrorHelper } from "@/app/api/lib/helper";
 import { BadRequestError } from "@/lib/error";
 import {
   Fundamental,

@@ -64,7 +64,7 @@ const SignUpForm = () => {
   return (
     <Form {...form}>
       <form
-        className="space-y-6 w-full max-w-sm mx-auto pt-10"
+        className="space-y-6 w-full max-w-sm mx-auto"
         onSubmit={form.handleSubmit(onFormSubmit, onFormSubmitError)}
       >
         <FormField
