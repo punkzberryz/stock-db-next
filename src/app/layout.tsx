@@ -1,12 +1,10 @@
-import type { Metadata } from "next";
 import { Kanit as FontSans } from "next/font/google";
-
 import "@/components/globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ThemeToggleButton from "@/components/theme/theme-toggle-button";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
 import Navbar from "@/components/Navbar/navbar";
+import { Toaster } from "react-hot-toast";
 
 const fontSans = FontSans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -36,6 +34,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <ThemeToggleButton />
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>

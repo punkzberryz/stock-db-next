@@ -18,8 +18,11 @@ const Navbar = () => {
           </div>
           <p className="text-4xl font-semibold tracking-wider">Stonk-db</p>
         </div>
-        <div className="mx-auto">
+        <div className="mx-auto flex gap-4">
           <Link href="/fundamental">Fundamental</Link>
+          <Link href="/auth/signin">Sign in</Link>
+          <Link href="/auth/signup">Sign up</Link>
+          <Link href="/me">Me</Link>
         </div>
       </div>
     </nav>
