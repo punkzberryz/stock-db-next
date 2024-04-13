@@ -6,7 +6,8 @@ import SignOutButton from "./signout-button";
 const MePage = async () => {
   const { user } = await validateRequest();
   if (!user) {
-    return redirect("/auth/signin");
+    // return redirect("/auth/signin");
+    return null;
   }
   return (
     <MaxWidthWrapper>
