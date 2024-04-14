@@ -3,6 +3,7 @@ import "@/components/globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/footer";
 
 const fontSans = FontSans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -30,6 +31,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Footer />
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>

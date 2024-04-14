@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export const errorResponse = ({
+export const apiErrorResponse = ({
   message,
   statusCode,
   statusText,

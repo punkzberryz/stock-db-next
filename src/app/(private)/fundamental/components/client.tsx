@@ -2,8 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatDateString } from "@/lib/format";
 import { Fundamental } from "@/schema/stock/fundamental.schema";
-import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
@@ -89,7 +89,7 @@ const convertToCSVData = (data: Fundamental[]) => {
   csvHorizontalData.forEach((row, i) => {
     row.forEach((call, j) => {
       if (call instanceof Date) {
-        csvVerticalData[j].push(format(call, "yyyy-MM-dd"));
+        csvVerticalData[j].push(formatDateString(call));
       } else {
         csvVerticalData[j].push(call);
       }

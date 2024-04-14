@@ -57,8 +57,12 @@ export const clearSession = async (sessionId: string) => {
   );
 };
 
+export const getSessionId = () => {
+  return cookies().get(lucia.sessionCookieName)?.value;
+};
+
 export const validateRequest = cache(async (sessionIdFromAuth?: string) => {
-  let sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+  let sessionId = getSessionId() ?? null;
   if (sessionIdFromAuth) {
     sessionId = sessionIdFromAuth;
   }
@@ -91,12 +95,3 @@ export const validateRequest = cache(async (sessionIdFromAuth?: string) => {
   }
   return result;
 });
-
-export const validateRequestMiddleware = async (
-  req: NextRequest,
-  event: NextFetchEvent
-) => {
-  const sessionId = cookies().get(COOKIE_NAME)?.value;
-  console.log(`[validateRequestMiddleware] sessionId: ${sessionId}`);
-  return req;
-};

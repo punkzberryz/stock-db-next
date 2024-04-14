@@ -3,61 +3,55 @@ import {
   InternalServerError,
   UnauthorizedError,
 } from "@/lib/error";
-import { NextResponse } from "next/server";
+import { apiErrorResponse } from "./error.response";
 
 export const catchRouteErrorHelper = (err: unknown, route: string) => {
   if (err instanceof UnauthorizedError) {
     console.error(`[UNAUTH_ERROR ${route}] ${err.message}`);
-    return NextResponse.json(
-      {
-        error: { message: err.message },
-      },
-      { status: 401, statusText: "Unauthorized" }
-    );
+    return apiErrorResponse({
+      message: err.message,
+      statusCode: 401,
+      statusText: "Unauthorized",
+    });
   }
   if (err instanceof BadRequestError) {
     console.error(`[BAD_REQUEST_ERROR ${route}] ${err.message}`);
-    return NextResponse.json(
-      {
-        error: { message: err.message },
-      },
-      { status: 400, statusText: "BadRequest" }
-    );
+    return apiErrorResponse({
+      message: err.message,
+      statusCode: 400,
+      statusText: "BadRequest",
+    });
   }
   if (err instanceof InternalServerError) {
     console.error(`[INTERNAL_SERVER_ERROR ${route}] ${err.message}`);
-    return NextResponse.json(
-      {
-        error: { message: err.message },
-      },
-      { status: 500, statusText: "InternalServerError" }
-    );
+    return apiErrorResponse({
+      message: err.message,
+      statusCode: 500,
+      statusText: "InternalServerError",
+    });
   }
   if (err instanceof Error) {
     console.error(`[ERROR ${route}] ${err.message}`);
-    return NextResponse.json(
-      {
-        error: { message: err.message },
-      },
-      { status: 500, statusText: "ServerError" }
-    );
+    return apiErrorResponse({
+      message: err.message,
+      statusCode: 500,
+      statusText: "ServerError",
+    });
   }
   if (typeof err === "string") {
     console.error(`[ERROR ${route}] ${err}`);
-    return NextResponse.json(
-      {
-        error: { message: err },
-      },
-      { status: 500, statusText: "ServerError" }
-    );
+    return apiErrorResponse({
+      message: err,
+      statusCode: 500,
+      statusText: "ServerError",
+    });
   }
   console.error(`[ERROR ${route}] ${err}`);
-  return NextResponse.json(
-    {
-      error: { message: `${err}` },
-    },
-    { status: 500, statusText: "ServerError" }
-  );
+  return apiErrorResponse({
+    message: `${err}`,
+    statusCode: 500,
+    statusText: "ServerError",
+  });
 };
 
 export const divideByMillion = (num?: number) => {

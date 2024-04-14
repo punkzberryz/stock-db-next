@@ -9,7 +9,7 @@ const NavbarContent = ({ children }: { children?: React.ReactNode }) => {
       <div className="flex gap-2 items-center justify-between">
         <Link href="/">
           <div className="flex items-center gap-2 w-[250px]">
-            <div className="w-[100px] h-auto -m-2">
+            <div className="w-[50px] h-auto m-2 rounded-xl p-2 bg-primary">
               <Image
                 src="/logo.svg"
                 alt="logo"

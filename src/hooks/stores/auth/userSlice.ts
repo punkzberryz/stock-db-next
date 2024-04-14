@@ -30,7 +30,7 @@ export const createUserSlice: StateCreator<UserSlice, [], [], UserSlice> = (
       return;
     }
     const { user } = await response.json();
-    console.log("user from fetchUser on client", user);
+    console.log("user from fetchUser on client success");
     set((state) => ({ user }));
   },
 });

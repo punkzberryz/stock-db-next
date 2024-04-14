@@ -5,23 +5,39 @@ import { fundamentalColumns } from "./components/column-def";
 import Client from "./components/client";
 import { getFundamental, getInfo } from "@/action/stock";
 import { Info } from "@/schema/stock/info.schema";
-import { BadRequestError } from "@/lib/error";
+import { BadRequestError, UnauthorizedError } from "@/lib/error";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/format";
+import { getSessionId } from "@/lib/auth";
 
 interface FundamentalPageProps {
   searchParams: {
     ticker?: string;
+    periodType?: string;
   };
 }
 const FundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
+  const sessionId = getSessionId();
+  if (!sessionId) {
+    throw new UnauthorizedError("unauthorized");
+  }
+
   const ticker = searchParams.ticker ?? "AAPL";
   const fundamentals: Fundamental[] = [];
   let stcokInfo: Info | undefined;
+  let periodType: "quarterly" | "annual" | undefined;
+
+  if (
+    searchParams.periodType === "quarterly" ||
+    searchParams.periodType === "annual"
+  ) {
+    periodType = searchParams.periodType;
+  }
+
   try {
     const [fundResp, infoResp] = await Promise.all([
-      getFundamental({ ticker, type: "annual" }),
-      getInfo({ ticker }),
+      getFundamental({ ticker, periodType, sessionId }),
+      getInfo({ ticker, sessionId }),
     ]);
 
     fundResp.forEach((f) =>

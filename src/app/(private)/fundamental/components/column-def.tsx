@@ -1,5 +1,5 @@
 "use client";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatDateString } from "@/lib/format";
 import { Fundamental } from "@/schema/stock/fundamental.schema";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
@@ -12,12 +12,22 @@ const valueToCurrency = (value?: number) => {
     maximumFractionDigits: 1,
   });
 };
+const valueToUnit = (value?: number) => {
+  if (!value) return "-";
+  return formatCurrency(value, {
+    currency: "THB",
+    notation: "compact",
+    maximumFractionDigits: 1,
+    style: "decimal",
+  });
+};
 
 export const fundamentalColumns: ColumnDef<Fundamental>[] = [
   {
     accessorKey: "date",
     header: "Date",
-    cell: ({ row }) => format(row.original.date, "yyyy-MM"),
+    cell: ({ row }) =>
+      formatDateString(row.original.date, { excludeDay: true }),
   },
   {
     accessorKey: "revenue",
@@ -72,13 +82,19 @@ export const fundamentalColumns: ColumnDef<Fundamental>[] = [
   {
     accessorKey: "commonStockEquity",
     header: "Common Stock Equity",
+    cell: ({ row }) => valueToUnit(row.original.commonStockEquity),
   },
   {
     accessorKey: "stockholdersEquity",
     header: "Stockholder Equity",
+    cell: ({ row }) => valueToUnit(row.original.stockholdersEquity),
   },
   { accessorKey: "dilutedEPS", header: "Diluted EPS" },
-  { accessorKey: "ebitda", header: "EBITDA" },
+  {
+    accessorKey: "ebitda",
+    header: "EBITDA",
+    cell: ({ row }) => valueToCurrency(row.original.ebitda),
+  },
   {
     accessorKey: "investedCapital",
     header: "Invested Capital",
