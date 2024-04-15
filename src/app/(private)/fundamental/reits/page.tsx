@@ -34,7 +34,7 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
     date: Date;
     dividend: number;
   }[];
-  let dividendsPerYear: Record<number, number> = {};
+  const dividendsPerYear: Map<number, number> = new Map();
   let stcokInfo: Info | undefined;
   let periodType: "quarterly" | "annual" | undefined;
 
@@ -63,19 +63,38 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
     });
 
     dividends = priceResp.dividends;
+
+    dividends.forEach((d) => {
+      const year = d.date.getFullYear();
+      if (!dividendsPerYear.has(year)) {
+        //initialize the year with 0 dividend
+        dividendsPerYear.set(year, 0);
+      }
+      if (!dividendsPerYear.get(year + 1)) {
+        //initialize the next year with 0 dividend
+        //this is to fill the gap year with 0 dividend
+        dividendsPerYear.set(year + 1, 0);
+      }
+      dividendsPerYear.set(year, dividendsPerYear.get(year)! + d.amount);
+    });
+
+    //Fill the gap year
+    Array.from(dividendsPerYear).forEach(([year, amount], i, arr) => {
+      if (i === 0) {
+        return;
+      }
+      const prevYear = arr[i - 1][0];
+      if (year - prevYear > 1) {
+        for (let j = prevYear + 1; j < year; j++) {
+          dividendsPerYear.set(j, 0);
+        }
+      }
+    });
+
     dividendsData = Array.from(dividends).map(([date, dividend]) => ({
       date: dividend.date,
       dividend: dividend.amount,
     }));
-
-    dividendsPerYear = dividendsData.reduce((acc, d) => {
-      const year = d.date.getFullYear();
-      if (!acc[year]) {
-        acc[year] = 0;
-      }
-      acc[year] += d.dividend;
-      return acc;
-    }, {} as Record<number, number>);
 
     // basic analysis
     for (let i = 0; i < fundamentals.length; i++) {
@@ -115,15 +134,19 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
       }
       let dividendGrowRate: number | undefined;
       const year = f.date.getFullYear();
-      if (dividendsPerYear[year - 1] && dividendsPerYear[year]) {
+      const thisYearDiv = dividendsPerYear.get(year);
+      console.log({
+        year,
+        thisYearDiv,
+      });
+      if (dividendsPerYear.get(year - 1) && thisYearDiv !== undefined) {
         dividendGrowRate =
-          (dividendsPerYear[year] - dividendsPerYear[year - 1]) /
-          Math.abs(dividendsPerYear[year - 1]);
+          (thisYearDiv! - dividendsPerYear.get(year - 1)!) /
+          Math.abs(dividendsPerYear.get(year - 1)!);
       }
       let dividendYield: number | undefined;
-
-      if (f.price && dividendsPerYear[year]) {
-        dividendYield = dividendsPerYear[year] / f.price;
+      if (f.price && thisYearDiv !== undefined) {
+        dividendYield = thisYearDiv / f.price;
       }
       analysis.push({
         date: f.date,
@@ -132,7 +155,7 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
         netProfitGrowRate,
         gearingRatio,
         netProfitMargin,
-        divided: dividendsPerYear[year],
+        divided: thisYearDiv,
         priceToBook,
         priceToEarning,
         dividendGrowRate,

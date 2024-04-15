@@ -4,7 +4,7 @@ import { ReitsFundamental } from "@/schema/stock/fundamental.schema";
 import { ColumnDef } from "@tanstack/react-table";
 
 const valueToCurrency = (value?: number) => {
-  if (!value) return "-";
+  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
   return formatCurrency(value, {
     currency: "THB",
     notation: "compact",
@@ -12,7 +12,7 @@ const valueToCurrency = (value?: number) => {
   });
 };
 const valueToUnit = (value?: number) => {
-  if (!value) return "-";
+  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
   return formatCurrency(value, {
     currency: "THB",
     notation: "compact",
@@ -22,7 +22,7 @@ const valueToUnit = (value?: number) => {
 };
 
 const valueToPercent = (value?: number) => {
-  if (!value) return "-";
+  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
   return formatCurrency(value, {
     currency: "THB",
     notation: "compact",

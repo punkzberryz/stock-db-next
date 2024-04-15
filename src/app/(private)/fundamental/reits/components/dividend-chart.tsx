@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart } from "recharts";
 interface DividendChartProps {
-  data: Record<number, number>;
+  data: Map<number, number>;
 }
 const DividendChart = ({ data }: DividendChartProps) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,15 +15,12 @@ const DividendChart = ({ data }: DividendChartProps) => {
   }, []);
   const lineData = useMemo(() => {
     const lineData: { date: string; dividend: number }[] = [];
-    Object.entries(data).forEach(([date, dividend]) => {
-      if (!data[parseInt(date) - 1]) {
-        //we create an 0 dividend for the year that has no dividend
-        lineData.push({ date: `${parseInt(date) - 1}`, dividend: 0 });
-      }
-      lineData.push({ date, dividend });
+    data.forEach((dividend, date) => {
+      lineData.push({ date: date.toString(), dividend });
     });
     const length = lineData.length;
-    return lineData.slice(1, length); // remove the first element because we have added a 0 dividend for the first year
+    //We remove the last element due to previous data fill the last element with placeholder data
+    return lineData.slice(0, length - 1);
   }, [data]);
 
   if (!isMounted) {
