@@ -10,7 +10,8 @@ const SignUpPage = async () => {
       <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-700 dark:text-gray-300">
         สมัครสมาชิกใหม่
       </h2>
-      <SignUpForm />
+      <p>Not implemented</p>
+      {/* <SignUpForm /> */}
       <Link
         href="/auth/signin"
         className={buttonVariants({

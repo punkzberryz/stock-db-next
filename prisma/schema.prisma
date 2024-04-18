@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -39,4 +40,86 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// Stock related
+model CompanyProfile {
+  symbol            String   @id
+  price             Float
+  mktCap            Float
+  companyName       String
+  currency          String
+  exchangeShortName String
+  industry          String
+  website           String
+  description       String
+  ceo               String
+  sector            String
+  country           String
+  dcfDiff           Float?
+  dcf               Float?
+  image             String?
+  ipoDate           String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+//Note that dividend and date must align correctly
+model Dividend {
+  symbol    String   @id
+  dividend  Float[]
+  date      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FinancialStatement {
+  symbol                    String
+  date                      DateTime @db.Date
+  revenue                   Float // Income Statement
+  netIncome                 Float
+  interestExpense           Float
+  weightedAverageShsOut     Float
+  totalAssets               Float // Balance Sheet
+  totalNonCurrentAssets     Float
+  propertyPlantEquipmentNet Float
+  totalLiabilities          Float
+  shortTermDebt             Float
+  longTermDebt              Float
+  totalDebt                 Float
+  totalEquity               Float
+  operatingCashFlow         Float // Cashflow
+  freeCashFlow              Float
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@id(name: "symbol_date", [symbol, date])
+  @@index([symbol])
+}
+
+model ReitsKeyMetrics {
+  symbol                  String
+  date                    DateTime @db.Date
+  price                   Float
+  propertyYield           Float //not percent
+  costOfDebt              Float
+  yieldSpread             Float //propertyYield - costOfDebt
+  revenueGrowth           Float?
+  netProfitGrowth         Float?
+  dividend                Float
+  dividendYield           Float
+  dividendGrowth          Float?
+  gearingRatio            Float
+  netProfitMargin         Float
+  bookValuePerShare       Float
+  bookValuePerShareGrowth Float?
+  priceToBook             Float
+  priceToBookGrowth       Float?
+  priceToEarning          Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id(name: "symbol_date", [symbol, date])
+  @@index([symbol])
 }

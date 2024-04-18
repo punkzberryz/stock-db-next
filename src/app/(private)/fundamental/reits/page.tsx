@@ -1,12 +1,10 @@
-import { getInfo, getPrice, getReitsFundamental } from "@/action/stock";
+import { getPrice, getReitsFundamental } from "@/action/stock";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
-import { Label } from "@/components/ui/label";
 import { getSessionId } from "@/lib/auth";
 import { BadRequestError, UnauthorizedError } from "@/lib/error";
-import { formatCurrency, formatDateString } from "@/lib/format";
+import { formatDateString } from "@/lib/format";
 import { ReitsFundamental } from "@/schema/stock/fundamental.schema";
-import { Info } from "@/schema/stock/info.schema";
-import DataTable from "../components/data-table";
+import DataTable from "../../../../components/Table/data-table";
 import {
   ReitsAnalysis,
   reitsAnalysisColumns,
@@ -35,7 +33,6 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
     dividend: number;
   }[];
   const dividendsPerYear: Map<number, number> = new Map();
-  let stcokInfo: Info | undefined;
   let periodType: "quarterly" | "annual" | undefined;
 
   if (
@@ -45,9 +42,8 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
     periodType = searchParams.periodType;
   }
   try {
-    const [fundResp, infoResp, priceResp] = await Promise.all([
+    const [fundResp, priceResp] = await Promise.all([
       getReitsFundamental({ ticker, periodType, sessionId }),
-      getInfo({ ticker, sessionId }),
       getPrice({ ticker, sessionId }),
     ]);
 
@@ -135,10 +131,7 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
       let dividendGrowRate: number | undefined;
       const year = f.date.getFullYear();
       const thisYearDiv = dividendsPerYear.get(year);
-      console.log({
-        year,
-        thisYearDiv,
-      });
+
       if (dividendsPerYear.get(year - 1) && thisYearDiv !== undefined) {
         dividendGrowRate =
           (thisYearDiv! - dividendsPerYear.get(year - 1)!) /
@@ -162,25 +155,20 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
         dividendYield,
       });
     }
-
-    stcokInfo = infoResp;
   } catch (err) {
     console.error(err);
     throw new BadRequestError("Error in fetching data");
-  }
-  if (!stcokInfo) {
-    throw new BadRequestError("Stock info not found");
   }
 
   return (
     <MaxWidthWrapper className="flex flex-col gap-6">
       <div>
         <h1 className="text-3xl font-semibold tracking-tighter">
-          {stcokInfo.symbol.toUpperCase()}
+          {ticker.toUpperCase()}
         </h1>
-        <h2 className="text-lg text-gray-500">{stcokInfo.longName}</h2>
+        {/* <h2 className="text-lg text-gray-500">{stcokInfo.longName}</h2> */}
       </div>
-      <div>
+      {/* <div>
         <div className="flex space-x-2 items-center">
           <Label>market cap</Label>
           <span>
@@ -195,7 +183,7 @@ const ReitsFundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
             })}
           </span>
         </div>
-      </div>
+      </div> */}
       <DataTable
         columns={reitsFundamentalColumns}
         data={fundamentals}

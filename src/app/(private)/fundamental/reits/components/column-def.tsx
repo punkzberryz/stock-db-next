@@ -1,35 +1,12 @@
 "use client";
-import { formatCurrency, formatDateString } from "@/lib/format";
+import {
+  formatDateString,
+  valueToCurrency,
+  valueToUnit,
+  valueToPercent,
+} from "@/lib/format";
 import { ReitsFundamental } from "@/schema/stock/fundamental.schema";
 import { ColumnDef } from "@tanstack/react-table";
-
-const valueToCurrency = (value?: number) => {
-  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
-  return formatCurrency(value, {
-    currency: "THB",
-    notation: "compact",
-    maximumFractionDigits: 1,
-  });
-};
-const valueToUnit = (value?: number) => {
-  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
-  return formatCurrency(value, {
-    currency: "THB",
-    notation: "compact",
-    maximumFractionDigits: 1,
-    style: "decimal",
-  });
-};
-
-const valueToPercent = (value?: number) => {
-  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
-  return formatCurrency(value, {
-    currency: "THB",
-    notation: "compact",
-    maximumFractionDigits: 1,
-    style: "percent",
-  });
-};
 
 export const reitsFundamentalColumns: ColumnDef<ReitsFundamental>[] = [
   {

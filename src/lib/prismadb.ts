@@ -12,3 +12,9 @@ if (process.env.NODE_ENV !== "production") globalThis.prisma = prismadb;
 
 const prismaAdapter = new PrismaAdapter(prismadb.session, prismadb.user);
 export { prismadb, prismaAdapter };
+
+export enum PrismaClientErrorCode {
+  UniqueConstraintViolation = "P2002",
+  ForeignKeyConstraintViolation = "P2003",
+  RecordDoesNotExist = "P2025",
+}

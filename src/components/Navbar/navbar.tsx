@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import AuthNav from "./auth-nav";
+import MiddleNav from "./middle-nav";
 
 const NavbarContent = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -50,9 +51,7 @@ const PrivateNavbar = () => {
   return (
     <NavbarContent>
       <div className="flex gap-4">
-        <Link href="/fundamental">Fundamental</Link>
-        <Link href="/me">Me</Link>
-        <Link href="/cook">cook</Link>
+        <MiddleNav />
       </div>
       <div className="w-[250px] flex justify-end">
         <div className="mr-10">

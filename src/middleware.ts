@@ -50,9 +50,9 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
   if (
     !path.startsWith("/fundamental") &&
     !path.startsWith("/cook") &&
+    !path.startsWith("/analysis") &&
     !path.startsWith("/auth/signin") &&
-    !path.startsWith("/auth/signup") &&
-    true
+    !path.startsWith("/auth/signup")
   ) {
     // Skip public routes
     return NextResponse.next();
@@ -80,7 +80,13 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/fundamental/:path*", "/auth/signin", "/auth/signup", "/cook"],
+  matcher: [
+    "/fundamental/:path*",
+    "/auth/signin",
+    "/auth/signup",
+    "/cook",
+    "/analysis/:path*",
+  ],
 };
 
 // const baseURL = process.env.BASE_URL || "http://localhost:3000";
