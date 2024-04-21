@@ -123,3 +123,15 @@ model ReitsKeyMetrics {
   @@id(name: "symbol_date", [symbol, date])
   @@index([symbol])
 }
+
+model ReitsRating {
+  id             Int      @id @default(autoincrement())
+  symbol         String
+  score          Float
+  maxScore       Float
+  ratingCriteria String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([symbol])
+}

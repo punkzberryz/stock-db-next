@@ -1,13 +1,49 @@
+"use client";
 import { GetProfileResponse } from "@/app/api/stock/fmp/[ticker]/company-info/response";
 import { formatCurrency } from "@/lib/format";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { formatDate } from "date-fns";
+import toast from "react-hot-toast";
 
 interface CompanyProfileDisplayProps {
   profile: GetProfileResponse;
 }
+
+const writeTextWithLabel = (label: string, text: string) => {
+  return `${label}\t${text}`;
+};
+
 const CompanyProfileDisplay = ({ profile }: CompanyProfileDisplayProps) => {
+  const textToCopy = [
+    writeTextWithLabel("Name", profile.companyName),
+    writeTextWithLabel("Symbol", profile.symbol),
+    writeTextWithLabel(
+      "Price",
+      `${formatCurrency(profile.price)} (${formatDate(
+        new Date(),
+        "yyyy-MM-dd"
+      )})`
+    ),
+    writeTextWithLabel("Market Cap", formatCurrency(profile.mktCap)),
+    writeTextWithLabel("Industry", profile.industry),
+    writeTextWithLabel("Sector", profile.sector),
+    writeTextWithLabel("Website", profile.website),
+    writeTextWithLabel("CEO", profile.ceo),
+    writeTextWithLabel(
+      "YahooFinance",
+      `https://finance.yahoo.com/quote/${profile.symbol}`
+    ),
+  ].join("\n");
+  const onClickToCopy = () => {
+    navigator.clipboard.writeText(textToCopy);
+    toast.success("Copied to clipboard");
+  };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="relative flex flex-col gap-2 border p-6 rounded-xl group hover:bg-gray-50">
+      <div className="opacity-0 absolute ml-auto right-5 bottom-5 group-hover:opacity-100 duration-300">
+        <Button onClick={onClickToCopy}>Coppy</Button>
+      </div>
       <div className="flex space-x-2">
         <p className="text-gray-500">Name</p>
         <p>
@@ -26,10 +62,6 @@ const CompanyProfileDisplay = ({ profile }: CompanyProfileDisplayProps) => {
       <div className="flex space-x-2">
         <p className="text-gray-500">Market Cap</p>
         <p>{formatCurrency(profile.mktCap)}</p>
-      </div>
-      <div className="flex space-x-2">
-        <p className="text-gray-500">Industry</p>
-        <p>{profile.industry}</p>
       </div>
       <div className="flex space-x-2">
         <p className="text-gray-500">Website</p>
@@ -51,6 +83,14 @@ const CompanyProfileDisplay = ({ profile }: CompanyProfileDisplayProps) => {
       <div className="flex space-x-2">
         <p className="text-gray-500">CEO</p>
         <p>{profile.ceo}</p>
+      </div>
+      <div>
+        <Link
+          className="hover:underline hover:text-primary text-purple-700"
+          href={`https://finance.yahoo.com/quote/${profile.symbol}`}
+        >
+          Link to YahooFinance
+        </Link>
       </div>
     </div>
   );

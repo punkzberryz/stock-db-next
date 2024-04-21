@@ -3,6 +3,7 @@
 .env.prod
 .env.dev
 .env.bk
+.todo.txt
 # dependencies
 /node_modules
 /.pnp

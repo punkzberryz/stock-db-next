@@ -3,18 +3,25 @@ import CompanyProfileDisplay from "@/components/stock/company-profile-display";
 import { BadRequestError } from "@/lib/error";
 import React from "react";
 import { fmpApi } from "@/app/api/lib/api/fmp/fmp-api";
-import {
-  keyMetricsColumns,
-  fundamentalColumns,
-} from "./components/table/column-def";
+import { keyMetricsColumns } from "./components/table/keymetrics-column-def";
 import { makeDividendPerYear } from "@/action/stock";
-import { DividendChart } from "./components/charts";
+import { DividendChart, YearlyDividendChart } from "./components/charts";
 import Client from "./components/client";
 import ReitsRatingModel from "./components/reits-rating-model";
-import SaveToDb from "./components/save-to-db";
-import { getReitsAnalysisResultsFromDb } from "@/action/stock/stock-action/reits-analysis";
+import { SaveToDb } from "./components/save-to-db";
+import {
+  getReitsAnalysisResultsFromDb,
+  getReitsRatingsBySymbol,
+} from "@/action/stock/stock-action/reits-analysis";
 import { makeReitsAnalysisDataFromDb } from "./components/make-data";
 import DataTable from "@/components/Table/data-table";
+import { formatDateString, valueToPercent } from "@/lib/format";
+import CopyTableToClipboard from "./components/copy-table-to-clipboard";
+import { fundamentalColumns } from "./components/table/fundamental-column-def";
+import {
+  makeReitsFundamentalTableData,
+  makeReitsKeymetricsTableData,
+} from "./components/table/data";
 
 interface ReitsAnalysisPageProps {
   searchParams: {
@@ -24,7 +31,6 @@ interface ReitsAnalysisPageProps {
 
 const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
   const ticker = searchParams.ticker ?? "LHHOTEL.bk";
-  console.log(ticker.toLowerCase());
   const dbResults = await getReitsAnalysisResultsFromDb(ticker);
   if (dbResults.error) {
     throw new BadRequestError("Failed to fetch data");
@@ -68,6 +74,11 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
   const yearlyDividends = makeDividendPerYear(dividends);
   const todayPrice = profile.price;
 
+  const { ratings } = await getReitsRatingsBySymbol(ticker.toUpperCase());
+  const fundamentalTable = makeReitsFundamentalTableData(keymetrics.financials);
+  const keyMetricsTable = makeReitsKeymetricsTableData(
+    keymetrics.reitsKeyMetrics
+  );
   return (
     <MaxWidthWrapper className="flex flex-col gap-8">
       <div>
@@ -81,20 +92,25 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
       {/* Fundamental Table */}
       <DataTable
         columns={fundamentalColumns}
-        data={keymetrics.financials}
+        data={fundamentalTable}
         orientation="horizontal"
       />
+      <CopyTableToClipboard data={keymetrics.financials} />
       {/* Analysis Table */}
       <DataTable
         columns={keyMetricsColumns}
-        data={keymetrics.reitsKeyMetrics}
+        data={keyMetricsTable}
         orientation="horizontal"
       />
-      <DividendChart data={yearlyDividends} />
+      <YearlyDividendChart data={yearlyDividends} />
+      <DividendChart
+        data={dividends.map((d) => ({ year: d.date, dividend: d.dividend }))}
+      />
       <ReitsRatingModel
         todayPrice={todayPrice}
         fundamentals={keymetrics.financials}
         keymetrics={keymetrics.reitsKeyMetrics}
+        symbol={profile.symbol}
       />
       <Client />
       {isDbData ? null : (
@@ -105,6 +121,25 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
           dividends={dividends}
         />
       )}
+      {ratings && ratings.length ? (
+        <div>
+          <p>Previous rating</p>
+          {ratings.map((r) => (
+            <div key={r.id} className="w-fit">
+              <div className="grid grid-cols-2">
+                <p className="px-2 text-gray-500">Score</p>
+                <p className="text-right">
+                  {valueToPercent(r.score / r.maxScore)}
+                </p>
+              </div>
+              <div className="grid grid-cols-2">
+                <p className="px-2 text-gray-500">Recorded Date</p>
+                <p className="text-right">{formatDateString(r.createdAt)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </MaxWidthWrapper>
   );
 };

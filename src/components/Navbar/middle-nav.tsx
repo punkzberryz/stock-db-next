@@ -43,6 +43,10 @@ const links: LinkType[] = [
         href: "/reits",
         title: "Reits",
       },
+      {
+        href: "/reits/compare",
+        title: "Reits Compare",
+      },
     ],
   },
   {

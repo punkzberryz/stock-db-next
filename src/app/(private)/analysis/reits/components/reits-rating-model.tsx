@@ -1,6 +1,8 @@
 import { fmpApi } from "@/app/api/lib/api/fmp/fmp-api";
 import { valueToPercent } from "@/lib/format";
 import { calculateReitsRating } from "./make-data";
+import { SaveRatingToDb } from "./save-to-db";
+import { Separator } from "@/components/ui/separator";
 
 interface ReitsRatingModelProps {
   fundamentals: Awaited<
@@ -10,10 +12,12 @@ interface ReitsRatingModelProps {
     ReturnType<typeof fmpApi.getReitsKeyMetrics>
   >["reitsKeyMetrics"];
   todayPrice: number;
+  symbol: string;
 }
 const ReitsRatingModel = ({
   keymetrics,
   todayPrice,
+  symbol,
 }: ReitsRatingModelProps) => {
   const {
     score,
@@ -37,27 +41,26 @@ const ReitsRatingModel = ({
           </p>
         </div>
       ))}
-      <div className="mt-10">
-        <p>P/B 5 Year Avg {priceToBookAverage.toFixed(2)}</p>
-        <p>Today P/B {latestPriceToBook.toFixed(2)}</p>
-      </div>
-      <div>
-        <p className="text-gray-500">Price Gain over 5 years period</p>
-        <p>{valueToPercent(priceGainOver5Years)}</p>
-      </div>
-      <div>
-        <p className="text-gray-500">Dividend Gain over 5 years period</p>
-        <p>{valueToPercent(dividendGainOver5Years)}</p>
-      </div>
       {/* Total Score */}
-      <div>
-        <p className="text-gray-500">Total Score</p>
-        <p>
-          {score.toFixed(2)} / {maxScore}
-        </p>
-        <p className="text-gray-500">Rating</p>
-        <p>{valueToPercent(score / maxScore)} %</p>
+      <div className="py-6 flex gap-4 h-24">
+        <div>
+          <p className="text-gray-500">Total Score</p>
+          <p>
+            {score.toFixed(2)} / {maxScore}
+          </p>
+        </div>
+        <Separator orientation="vertical" />
+        <div>
+          <p className="text-gray-500">Rating</p>
+          <p>{valueToPercent(score / maxScore)} %</p>
+        </div>
       </div>
+      <SaveRatingToDb
+        ratingCriteria={ratingCriteria}
+        score={score}
+        maxScore={maxScore}
+        symbol={symbol}
+      />
     </div>
   );
 };

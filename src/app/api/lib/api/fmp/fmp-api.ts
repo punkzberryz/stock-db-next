@@ -119,7 +119,11 @@ class FmpApi {
   ): FmpReitsKeyMetrics {
     const price = keyMetrics.marketCap / financial.weightedAverageShsOut;
     const propertyYield = financial.netIncome / financial.totalNonCurrentAssets;
-    const costOfDebt = financial.interestExpense / financial.totalDebt;
+    // debt can be 0
+    const costOfDebt =
+      financial.totalDebt === 0
+        ? 0
+        : financial.interestExpense / financial.totalDebt;
     const hasPreviousFinancial = previousFinancial !== undefined;
     const revenueGrowth = hasPreviousFinancial
       ? (financial.revenue - previousFinancial.revenue) /
