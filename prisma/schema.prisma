@@ -74,22 +74,74 @@ model Dividend {
 }
 
 model FinancialStatement {
+  symbol                      String
+  date                        DateTime @db.Date
+  revenue                     Float // Income Statement
+  netIncome                   Float
+  interestExpense             Float
+  weightedAverageShsOut       Float
+  ebitda                      Float
+  totalAssets                 Float // Balance Sheet
+  totalNonCurrentAssets       Float
+  propertyPlantEquipmentNet   Float
+  cashAndShortTermInvestments Float
+  totalLiabilities            Float
+  shortTermDebt               Float
+  longTermDebt                Float
+  totalDebt                   Float
+  totalEquity                 Float
+  operatingCashFlow           Float // Cashflow
+  freeCashFlow                Float
+  marketCap                   Float // From Key Metrics
+  dividendYield               Float
+  pbRatio                     Float
+  peRatio                     Float
+  priceToSalesRatio           Float
+  pfcfRatio                   Float
+  payoutRatio                 Float
+  bookValuePerShare           Float
+  enterpriseValue             Float
+  investedCapital             Float
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  @@id(name: "symbol_date", [symbol, date])
+  @@index([symbol])
+}
+
+model FinancialGrowthRate {
+  symbol                  String
+  date                    DateTime @db.Date
+  revenueGrowth           Float
+  grossProfitGrowth       Float
+  ebitgrowth              Float
+  netIncomeGrowth         Float
+  operatingCashFlowGrowth Float
+  freeCashFlowGrowth      Float
+  epsgrowth               Float
+  dividendsperShareGrowth Float
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@id(name: "symbol_date", [symbol, date])
+  @@index([symbol])
+}
+
+model FinancialRatio {
   symbol                    String
   date                      DateTime @db.Date
-  revenue                   Float // Income Statement
-  netIncome                 Float
-  interestExpense           Float
-  weightedAverageShsOut     Float
-  totalAssets               Float // Balance Sheet
-  totalNonCurrentAssets     Float
-  propertyPlantEquipmentNet Float
-  totalLiabilities          Float
-  shortTermDebt             Float
-  longTermDebt              Float
-  totalDebt                 Float
-  totalEquity               Float
-  operatingCashFlow         Float // Cashflow
-  freeCashFlow              Float
+  netProfitMargin           Float
+  returnOnEquity            Float
+  debtEquityRatio           Float
+  freeCashFlowPerShare      Float
+  dividendYield             Float
+  priceBookValueRatio       Float
+  priceToBookRatio          Float
+  priceToSalesRatio         Float
+  priceEarningsRatio        Float
+  priceToFreeCashFlowsRatio Float
+  enterpriseValueMultiple   Float
+  priceFairValue            Float
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
 

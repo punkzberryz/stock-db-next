@@ -30,12 +30,14 @@ interface DataTableProps<TData, TValue> {
   options?: {
     cellHeight?: string;
   };
+  disableCopy?: boolean;
 }
 
 function DataTable<TData, TValue>({
   columns,
   data,
   orientation = "vertical",
+  disableCopy,
   options = {},
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -90,9 +92,11 @@ function DataTable<TData, TValue>({
   if (orientation === "horizontal") {
     return (
       <div className="group relative rounded-md w-fit border">
-        <div className="z-10 opacity-0 absolute ml-auto right-5 bottom-5 group-hover:opacity-100 duration-300">
-          <Button onClick={handleClickToCopy}>Coppy</Button>
-        </div>
+        {disableCopy ? null : (
+          <div className="z-10 opacity-0 absolute ml-auto right-5 bottom-5 group-hover:opacity-100 duration-300">
+            <Button onClick={handleClickToCopy}>Coppy</Button>
+          </div>
+        )}
         <Table className="flex">
           <TableHeader className="border-r">
             {table.getHeaderGroups().map((hg) => (

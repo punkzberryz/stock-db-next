@@ -1,7 +1,9 @@
+import { Currency } from "../get-currency";
+
 export const formatCurrency = (
   value: number,
   options: {
-    currency?: "USD" | "THB";
+    currency?: "USD" | "THB" | "SGD";
     notation?: Intl.NumberFormatOptions["notation"];
     maximumFractionDigits?: number;
     style?: Intl.NumberFormatOptions["style"];
@@ -18,20 +20,20 @@ export const formatCurrency = (
     currency,
     notation,
     maximumFractionDigits,
-    currencyDisplay: "symbol",
+    currencyDisplay: "narrowSymbol",
   }).format(Number(value));
 };
 
-export const valueToCurrency = (value?: number) => {
-  if (!value) return "-";
+export const valueToCurrency = (value?: number | null, currency?: Currency) => {
+  if (value === undefined || value === null) return "-"; //value can be 0, so we need to check undefined
   return formatCurrency(value, {
-    currency: "THB",
+    currency: currency ?? "USD",
     notation: "compact",
     maximumFractionDigits: 1,
   });
 };
-export const valueToUnit = (value?: number) => {
-  if (!value) return "-";
+export const valueToUnit = (value?: number | null) => {
+  if (value === undefined || value === null) return "-"; //value can be 0, so we need to check undefined
   return formatCurrency(value, {
     currency: "THB",
     notation: "compact",
@@ -39,8 +41,8 @@ export const valueToUnit = (value?: number) => {
     style: "decimal",
   });
 };
-export const valueToPercent = (value?: number) => {
-  if (value === undefined) return "-"; //value can be 0, so we need to check undefined
+export const valueToPercent = (value?: number | null) => {
+  if (value === undefined || value === null) return "-"; //value can be 0, so we need to check undefined
   return formatCurrency(value, {
     currency: "THB",
     notation: "compact",

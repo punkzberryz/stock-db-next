@@ -1,14 +1,15 @@
-import { Fundamental } from "@/schema/stock/fundamental.schema";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
-import DataTable from "../../../components/Table/data-table";
-import { fundamentalColumns } from "./components/column-def";
-import Client from "./components/client";
-import { getFundamental, getInfo } from "@/action/stock";
-import { Info } from "@/schema/stock/info.schema";
-import { BadRequestError, UnauthorizedError } from "@/lib/error";
-import { Label } from "@/components/ui/label";
-import { formatCurrency } from "@/lib/format";
-import { getSessionId } from "@/lib/auth";
+import { metadataHelper } from "@/lib/metadata";
+import PageWithoutTicker from "./components/page-without-ticker";
+import CompanyProfileDisplay from "@/components/stock/company-profile-display";
+import { getCurrencyFromSymbol } from "@/lib/get-currency";
+import { fetchDataForFundamental } from "./actions/fetch-data";
+import DataTable from "@/components/Table/data-table";
+import { makeFundamentalTableData } from "./components/table/data";
+import { fundamentalColumns } from "./components/table/fundamental-column-def";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import SearchForStockInput from "@/components/search-for-stock";
 
 interface FundamentalPageProps {
   searchParams: {
@@ -16,76 +17,54 @@ interface FundamentalPageProps {
     periodType?: string;
   };
 }
+const URL = "/fundamental";
 const FundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
-  return <MaxWidthWrapper>Unimplemented</MaxWidthWrapper>;
-  // const sessionId = getSessionId();
-  // if (!sessionId) {
-  //   throw new UnauthorizedError("unauthorized");
-  // }
+  const ticker = searchParams.ticker;
+  if (!ticker) {
+    return <PageWithoutTicker url={URL} />;
+  }
+  const currency = getCurrencyFromSymbol(ticker);
 
-  // const ticker = searchParams.ticker ?? "AAPL";
-  // const fundamentals: Fundamental[] = [];
-  // let stcokInfo: Info | undefined;
-  // let periodType: "quarterly" | "annual" | undefined;
+  //1) Get all required results from database or api
+  const [] = await Promise.all([]);
+  const { profile, financials } = await fetchDataForFundamental(ticker);
+  //2) calculate values that we need
+  const fundamentalTable = makeFundamentalTableData(financials, currency);
+  //3) display the result
 
-  // if (
-  //   searchParams.periodType === "quarterly" ||
-  //   searchParams.periodType === "annual"
-  // ) {
-  //   periodType = searchParams.periodType;
-  // }
-
-  // try {
-  //   const [fundResp, infoResp] = await Promise.all([
-  //     getFundamental({ ticker, periodType, sessionId }),
-  //     getInfo({ ticker, sessionId }),
-  //   ]);
-
-  //   fundResp.forEach((f) =>
-  //     fundamentals.push({ ...f, date: new Date(f.date) })
-  //   );
-  //   stcokInfo = infoResp;
-  // } catch (err) {
-  //   console.error(err);
-  //   throw new BadRequestError("Error in fetching data");
-  // }
-
-  // if (!stcokInfo) {
-  //   throw new BadRequestError("Stock info not found");
-  // }
-
-  // return (
-  //   <MaxWidthWrapper className="flex flex-col gap-6">
-  //     <div>
-  //       <h1 className="text-3xl font-semibold tracking-tighter">
-  //         {stcokInfo.symbol.toUpperCase()}
-  //       </h1>
-  //       <h2 className="text-lg text-gray-500">{stcokInfo.longName}</h2>
-  //     </div>
-  //     <div>
-  //       <div className="flex space-x-2 items-center">
-  //         <Label>market cap</Label>
-  //         <span>
-  //           {formatCurrency(stcokInfo.marketCap, { maximumFractionDigits: 1 })}
-  //         </span>
-  //       </div>
-  //       <div className="flex space-x-2 items-center">
-  //         <Label>Share outstanding</Label>
-  //         <span>
-  //           {formatCurrency(stcokInfo.sharesOutstanding, {
-  //             style: "decimal",
-  //           })}
-  //         </span>
-  //       </div>
-  //     </div>
-  //     <DataTable
-  //       columns={fundamentalColumns}
-  //       data={fundamentals}
-  //       orientation="horizontal"
-  //     />
-  //     <Client fundamentals={fundamentals} />
-  //   </MaxWidthWrapper>
-  // );
+  return (
+    <MaxWidthWrapper className="flex flex-col gap-8">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tighter">
+          Stock Fundamental {profile.symbol}
+        </h1>
+      </div>
+      <CompanyProfileDisplay profile={profile} currency={currency} />
+      {/* Fundamental Table */}
+      <DataTable
+        data={fundamentalTable}
+        columns={fundamentalColumns}
+        orientation="horizontal"
+      />
+      {/* Action Buttons */}
+      <div className="flex flex-col gap-4">
+        <Link
+          href={`/analysis/dcf?ticker=${ticker}`}
+          className={buttonVariants({
+            variant: "default",
+            className: "w-fit ml-auto",
+          })}
+        >
+          DCF Analysis
+        </Link>
+        <SearchForStockInput url={URL} />
+      </div>
+    </MaxWidthWrapper>
+  );
 };
 
 export default FundamentalPage;
+export const metadata = metadataHelper({
+  title: "Stock Fundamental",
+  description: "Stock fundamental",
+});

@@ -8,6 +8,7 @@ const validateRequestMiddleware = async (
   sessionId?: string;
 }> => {
   const sessionId = cookies().get(COOKIE_NAME)?.value;
+
   if (!sessionId) {
     return {
       isValid: false,

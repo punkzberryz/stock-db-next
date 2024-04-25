@@ -1,84 +1,63 @@
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import CompanyProfileDisplay from "@/components/stock/company-profile-display";
-import { BadRequestError } from "@/lib/error";
-import React from "react";
-import { fmpApi } from "@/app/api/lib/api/fmp/fmp-api";
 import { keyMetricsColumns } from "./components/table/keymetrics-column-def";
-import { makeDividendPerYear } from "@/action/stock";
 import { DividendChart, YearlyDividendChart } from "./components/charts";
 import Client from "./components/client";
 import ReitsRatingModel from "./components/reits-rating-model";
 import { SaveToDb } from "./components/save-to-db";
-import {
-  getReitsAnalysisResultsFromDb,
-  getReitsRatingsBySymbol,
-} from "@/action/stock/stock-action/reits-analysis";
-import { makeReitsAnalysisDataFromDb } from "./components/make-data";
 import DataTable from "@/components/Table/data-table";
 import { formatDateString, valueToPercent } from "@/lib/format";
-import CopyTableToClipboard from "./components/copy-table-to-clipboard";
 import { fundamentalColumns } from "./components/table/fundamental-column-def";
 import {
   makeReitsFundamentalTableData,
   makeReitsKeymetricsTableData,
 } from "./components/table/data";
+import { getCurrencyFromSymbol } from "@/lib/get-currency";
+import { fetchDataForReitsAnalysis } from "./actions/fetch-data";
+import {
+  calculateReitsRating,
+  getReitsRatingsBySymbol,
+} from "@/action/stock/reits";
+import { makeDividendPerYear } from "@/action/stock/dividend-service";
+import { fetchQuote } from "@/action/stock/quote-repo";
 
 interface ReitsAnalysisPageProps {
   searchParams: {
     ticker?: string;
   };
 }
-
+/*
+  1) fetch data from db or api
+  2) calculate values that we need
+  3) display the result
+*/
 const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
   const ticker = searchParams.ticker ?? "LHHOTEL.bk";
-  const dbResults = await getReitsAnalysisResultsFromDb(ticker);
-  if (dbResults.error) {
-    throw new BadRequestError("Failed to fetch data");
-  }
+  const currency = getCurrencyFromSymbol(ticker);
 
-  let profile: Awaited<ReturnType<typeof fmpApi.getProfile>> | undefined;
-  let keymetrics:
-    | Awaited<ReturnType<typeof fmpApi.getReitsKeyMetrics>>
-    | undefined;
-  let dividends: Awaited<ReturnType<typeof fmpApi.getDividends>> | undefined;
-  let isDbData = false;
-  const dbData = makeReitsAnalysisDataFromDb(dbResults);
-  if (!dbData.profile) {
-    // data not found, fetch from api
-    try {
-      const [profileResp, keymetricsResp, dividendResp] = await Promise.all([
-        fmpApi.getProfile(ticker),
-        fmpApi.getReitsKeyMetrics(ticker),
-        fmpApi.getDividends(ticker),
-      ]);
-      profile = profileResp;
-      keymetrics = keymetricsResp;
-      dividends = dividendResp;
-      console.log("fetching data from api complete");
-    } catch (err) {
-      console.error(err);
-      throw new BadRequestError("Failed to fetch data");
-    }
-  } else {
-    // data found in db
-    profile = dbData.profile;
-    keymetrics = dbData.keymetrics;
-    dividends = dbData.dividends;
-    isDbData = true;
-    console.log("fetching data from db complete");
-  }
+  //1) fetch data from db or api
 
-  if (!profile || !keymetrics || !dividends) {
-    return <MaxWidthWrapper>Not found...</MaxWidthWrapper>;
+  const [reitsData, ratingData, quote] = await Promise.all([
+    fetchDataForReitsAnalysis(ticker),
+    getReitsRatingsBySymbol(ticker.toUpperCase()),
+    fetchQuote(ticker),
+  ]);
+  const { dividends, financials, keymetrics, profile } = reitsData;
+  const { ratings } = ratingData;
+  if (!quote.data) {
+    throw new Error("No data found");
   }
-  const yearlyDividends = makeDividendPerYear(dividends);
-  const todayPrice = profile.price;
+  //2) calculate values that we need
+  const yearlyDividends = makeDividendPerYear(dividends.dividends);
+  const dividendsChartData = dividends.dividends.map((d) => ({
+    year: d.date,
+    dividend: d.dividend,
+  }));
+  const fundamentalTable = makeReitsFundamentalTableData(financials, currency);
+  const keyMetricsTable = makeReitsKeymetricsTableData(keymetrics, currency);
+  const todayPrice = quote.data.price;
+  const reitsRating = calculateReitsRating({ keymetrics, todayPrice });
 
-  const { ratings } = await getReitsRatingsBySymbol(ticker.toUpperCase());
-  const fundamentalTable = makeReitsFundamentalTableData(keymetrics.financials);
-  const keyMetricsTable = makeReitsKeymetricsTableData(
-    keymetrics.reitsKeyMetrics
-  );
   return (
     <MaxWidthWrapper className="flex flex-col gap-8">
       <div>
@@ -88,14 +67,13 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
         </h1>
         {/* <h2 className="text-lg text-gray-500">{profile.companyName}</h2> */}
       </div>
-      <CompanyProfileDisplay profile={profile} />
+      <CompanyProfileDisplay profile={profile} currency={currency} />
       {/* Fundamental Table */}
       <DataTable
         columns={fundamentalColumns}
         data={fundamentalTable}
         orientation="horizontal"
       />
-      <CopyTableToClipboard data={keymetrics.financials} />
       {/* Analysis Table */}
       <DataTable
         columns={keyMetricsColumns}
@@ -103,24 +81,16 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
         orientation="horizontal"
       />
       <YearlyDividendChart data={yearlyDividends} />
-      <DividendChart
-        data={dividends.map((d) => ({ year: d.date, dividend: d.dividend }))}
-      />
-      <ReitsRatingModel
-        todayPrice={todayPrice}
-        fundamentals={keymetrics.financials}
-        keymetrics={keymetrics.reitsKeyMetrics}
-        symbol={profile.symbol}
-      />
+      <DividendChart data={dividendsChartData} />
+      <ReitsRatingModel model={reitsRating} symbol={profile.symbol} />
       <Client />
-      {isDbData ? null : (
-        <SaveToDb
-          profile={profile}
-          financials={keymetrics.financials}
-          reitsKeyMetrics={keymetrics.reitsKeyMetrics}
-          dividends={dividends}
-        />
-      )}
+      <SaveToDb
+        profile={profile}
+        financials={financials}
+        reitsKeyMetrics={keymetrics}
+        dividends={dividends}
+      />
+
       {ratings && ratings.length ? (
         <div>
           <p>Previous rating</p>

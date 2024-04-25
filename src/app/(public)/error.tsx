@@ -35,14 +35,14 @@ export default function Error({
           <h2 className="text-base md:text-lg">มีข้อผิดพลาดเกิดขึ้น</h2>
         </header>
         <div className="relative w-[200px] h-[200px] md:row-span-3 md:order-1 m-10">
-          <Image
+          {/* <Image
             className="rounded-3xl"
             alt="sad panda"
             src="/img/error/sadPanda.jpg"
             sizes="200px"
             priority
             fill
-          />
+          /> */}
         </div>
         <div className="md:col-span-2 md:order-3 max-w-[350px]">
           <p className="text-base md:text-lg font-light pb-5">

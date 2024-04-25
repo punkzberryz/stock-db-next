@@ -11,7 +11,7 @@ const SignUpPage = async () => {
         สมัครสมาชิกใหม่
       </h2>
       <p>Not implemented</p>
-      {/* <SignUpForm /> */}
+      <SignUpForm />
       <Link
         href="/auth/signin"
         className={buttonVariants({

@@ -17,7 +17,6 @@ import { toast } from "react-hot-toast";
 import { signUpWithEmailAndPasswordAction } from "@/action/auth/auth-action";
 import { SignUpErrorResponse } from "@/action/auth/error-response";
 import { useState } from "react";
-import { catchErrorFromServerActionOnClientHelper } from "@/lib/error";
 
 const SignUpForm = () => {
   const router = useRouter();
@@ -45,11 +44,10 @@ const SignUpForm = () => {
         data
       );
       if (error) {
-        return catchErrorFromServerActionOnClientHelper(error);
+        throw new Error(error.message);
       }
       if (!user || !session) {
-        toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-        return;
+        throw new Error("user or session not found");
       }
       toast.success("สมัครสมาชิกสำเร็จ");
       router.push("/");

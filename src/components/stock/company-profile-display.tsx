@@ -1,31 +1,39 @@
 "use client";
-import { GetProfileResponse } from "@/app/api/stock/fmp/[ticker]/company-info/response";
+
 import { formatCurrency } from "@/lib/format";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { formatDate } from "date-fns";
 import toast from "react-hot-toast";
+import { Currency } from "@/lib/get-currency";
+import { CompanyProfile } from "@prisma/client";
 
 interface CompanyProfileDisplayProps {
-  profile: GetProfileResponse;
+  profile: CompanyProfile;
+  currency: Currency;
 }
 
 const writeTextWithLabel = (label: string, text: string) => {
   return `${label}\t${text}`;
 };
 
-const CompanyProfileDisplay = ({ profile }: CompanyProfileDisplayProps) => {
+const CompanyProfileDisplay = ({
+  profile,
+  currency,
+}: CompanyProfileDisplayProps) => {
   const textToCopy = [
     writeTextWithLabel("Name", profile.companyName),
     writeTextWithLabel("Symbol", profile.symbol),
     writeTextWithLabel(
       "Price",
-      `${formatCurrency(profile.price)} (${formatDate(
-        new Date(),
-        "yyyy-MM-dd"
-      )})`
+      `${formatCurrency(profile.price, {
+        currency: currency,
+      })} (${formatDate(new Date(), "yyyy-MM-dd")})`
     ),
-    writeTextWithLabel("Market Cap", formatCurrency(profile.mktCap)),
+    writeTextWithLabel(
+      "Market Cap",
+      formatCurrency(profile.mktCap, { currency })
+    ),
     writeTextWithLabel("Industry", profile.industry),
     writeTextWithLabel("Sector", profile.sector),
     writeTextWithLabel("Website", profile.website),
@@ -53,15 +61,15 @@ const CompanyProfileDisplay = ({ profile }: CompanyProfileDisplayProps) => {
       </div>
       <div className="flex space-x-2">
         <p className="text-gray-500">Price</p>
-        <p>{formatCurrency(profile.price)}</p>
+        <p>{formatCurrency(profile.price, { currency })}</p>
       </div>
       <div className="flex space-x-2">
         <p className="text-gray-500">DCF</p>
-        <p>{formatCurrency(profile.dcf)}</p>
+        <p>{profile.dcf ? formatCurrency(profile.dcf, { currency }) : "-"}</p>
       </div>
       <div className="flex space-x-2">
         <p className="text-gray-500">Market Cap</p>
-        <p>{formatCurrency(profile.mktCap)}</p>
+        <p>{formatCurrency(profile.mktCap, { currency })}</p>
       </div>
       <div className="flex space-x-2">
         <p className="text-gray-500">Website</p>

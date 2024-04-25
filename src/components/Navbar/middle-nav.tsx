@@ -10,10 +10,13 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
+import { LucideIcon, HomeIcon, Building2, Table, Banknote } from "lucide-react";
 
 type SubLinks = {
   title: string;
   href: string;
+  icon: LucideIcon;
+  description: string;
 };
 type LinkType = {
   title: string;
@@ -28,10 +31,8 @@ const links: LinkType[] = [
       {
         title: "main",
         href: "/",
-      },
-      {
-        title: "reits",
-        href: "/reits",
+        description: "main fundamental page",
+        icon: HomeIcon,
       },
     ],
   },
@@ -40,12 +41,22 @@ const links: LinkType[] = [
     href: "/analysis",
     sublinks: [
       {
+        href: "/dcf",
+        title: "Discounted Cash Flow",
+        description: "Discounted Cash Flow Analysis",
+        icon: Banknote,
+      },
+      {
         href: "/reits",
         title: "Reits",
+        description: "reits analysis page",
+        icon: Building2,
       },
       {
         href: "/reits/compare",
         title: "Reits Compare",
+        description: "reits compare analysis page",
+        icon: Table,
       },
     ],
   },
@@ -69,7 +80,20 @@ const NavigationLink = ({ link }: { link: LinkType }) => {
             {link.sublinks.map((l, idx) => (
               <li key={idx}>
                 <NavigationMenuLink asChild>
-                  <Link href={link.href + l.href}>{l.title}</Link>
+                  <Link
+                    href={link.href + l.href}
+                    className="flex items-center space-x-4 select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <l.icon />
+                    <div>
+                      <p className="text-sm font-medium leading-none">
+                        {l.title}
+                      </p>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        {l.description}
+                      </p>
+                    </div>
+                  </Link>
                 </NavigationMenuLink>
               </li>
             ))}

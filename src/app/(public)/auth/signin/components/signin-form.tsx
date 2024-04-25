@@ -1,7 +1,9 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, useForm } from "react-hook-form";
+import { signInSchema, SignInSchema } from "./signin-schema";
 import {
   Form,
   FormControl,
@@ -13,15 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
-import { signInSchema, SignInSchema } from "./signin-schema";
+// import { signInSchema, SignInSchema } from "./signin-schema";
 import { SignInErrorResponse } from "@/action/auth/error-response";
 import { signInWithEmailAndPassword } from "@/action/auth/auth-action";
-import { useState } from "react";
-import {
-  BadRequestError,
-  catchErrorFromServerActionOnClientHelper,
-} from "@/lib/error";
-import { useAuthStore } from "@/hooks/stores/auth/useAuthStore";
+import { catchErrorFromServerActionOnClientHelper } from "@/lib/error";
 
 const SignInForm = () => {
   const router = useRouter();
@@ -38,7 +35,7 @@ const SignInForm = () => {
       setIsLoading(true);
       const { error } = await signInWithEmailAndPassword(data);
       if (error) {
-        return catchErrorFromServerActionOnClientHelper(error);
+        throw new Error(error.message);
       }
       toast.success("เข้าสู่ระบบสำเร็จ");
       router.push("/");
@@ -95,11 +92,12 @@ const SignInForm = () => {
 const onFormSubmitError = (error: FieldErrors<SignInSchema>) => {};
 export default SignInForm;
 const catchSignInError = (err: unknown) => {
-  if (err instanceof BadRequestError) {
+  if (err instanceof Error) {
     if (err.message === SignInErrorResponse.passwordOrEmailIsNotMatch) {
       toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
       return;
     }
   }
+
   toast.error("เกิดข้อผิดพลาด");
 };

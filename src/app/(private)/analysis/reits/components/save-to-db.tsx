@@ -1,23 +1,25 @@
 "use client";
-import {
-  createReitsAnalysisResults,
-  createReitsRating,
-} from "@/action/stock/stock-action/reits-analysis";
-import { fmpApi } from "@/app/api/lib/api/fmp/fmp-api";
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { calculateReitsRating } from "./make-data";
+import {
+  CompanyProfile,
+  FinancialStatement,
+  ReitsKeyMetrics,
+} from "@prisma/client";
+import { DividendResponse } from "@/schema/stock/dividend.schema";
+import {
+  saveMetricsToDbAction,
+  saveReitsRatingToDbAction,
+} from "../actions/save-to-db-action";
+import { ReitsRatingResult } from "@/action/stock/reits";
 
 interface SaveToDbProps {
-  profile: Awaited<ReturnType<typeof fmpApi.getProfile>>;
-  financials: Awaited<
-    ReturnType<typeof fmpApi.getReitsKeyMetrics>
-  >["financials"];
-  reitsKeyMetrics: Awaited<
-    ReturnType<typeof fmpApi.getReitsKeyMetrics>
-  >["reitsKeyMetrics"];
-  dividends: Awaited<ReturnType<typeof fmpApi.getDividends>>;
+  profile: CompanyProfile;
+  financials: FinancialStatement[];
+  reitsKeyMetrics: ReitsKeyMetrics[];
+  dividends: DividendResponse;
 }
 const SaveToDb = ({
   dividends,
@@ -28,7 +30,7 @@ const SaveToDb = ({
   const [isLoading, setIsLoading] = useState(false);
   const handleSaveToDb = async () => {
     setIsLoading(true);
-    const { error } = await createReitsAnalysisResults({
+    const { error } = await saveMetricsToDbAction({
       dividends,
       financials,
       profile,
@@ -52,24 +54,15 @@ const SaveToDb = ({
 };
 
 interface SaveRatingToDbProps {
-  score: number;
-  maxScore: number;
-  ratingCriteria: ReturnType<typeof calculateReitsRating>["ratingCriteria"];
+  rating: ReitsRatingResult;
   symbol: string;
 }
-const SaveRatingToDb = ({
-  maxScore,
-  score,
-  ratingCriteria,
-  symbol,
-}: SaveRatingToDbProps) => {
+const SaveRatingToDb = ({ rating, symbol }: SaveRatingToDbProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleSaveToDb = async () => {
     setIsLoading(true);
-    const { error } = await createReitsRating({
-      maxScore,
-      score,
-      ratingCriteria,
+    const { error } = await saveReitsRatingToDbAction({
+      rating,
       symbol,
     });
     setIsLoading(false);

@@ -1,10 +1,9 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { calculateReitsRating } from "../../components/make-data";
-import { ReitsRatingCriteria } from "@/action/stock/stock-action/reits-analysis";
 import { valueToPercent, valueToUnit } from "@/lib/format";
 import TableColumnHeader from "@/components/Table/table-column-header";
 import Link from "next/link";
+import { ReitsRatingCriteria } from "@/action/stock/reits";
 
 interface HeaderCellProps {
   title: string;

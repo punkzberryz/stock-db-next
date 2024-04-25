@@ -1,24 +1,13 @@
-import { fmpApi } from "@/app/api/lib/api/fmp/fmp-api";
 import { valueToPercent } from "@/lib/format";
-import { calculateReitsRating } from "./make-data";
 import { SaveRatingToDb } from "./save-to-db";
 import { Separator } from "@/components/ui/separator";
+import { ReitsRatingResult } from "@/action/stock/reits";
 
 interface ReitsRatingModelProps {
-  fundamentals: Awaited<
-    ReturnType<typeof fmpApi.getReitsKeyMetrics>
-  >["financials"];
-  keymetrics: Awaited<
-    ReturnType<typeof fmpApi.getReitsKeyMetrics>
-  >["reitsKeyMetrics"];
-  todayPrice: number;
+  model: ReitsRatingResult;
   symbol: string;
 }
-const ReitsRatingModel = ({
-  keymetrics,
-  todayPrice,
-  symbol,
-}: ReitsRatingModelProps) => {
+const ReitsRatingModel = ({ model, symbol }: ReitsRatingModelProps) => {
   const {
     score,
     maxScore,
@@ -27,7 +16,7 @@ const ReitsRatingModel = ({
     priceGainOver5Years,
     priceToBookAverage,
     ratingCriteria,
-  } = calculateReitsRating({ keymetrics, todayPrice });
+  } = model;
 
   return (
     <div>
@@ -55,12 +44,7 @@ const ReitsRatingModel = ({
           <p>{valueToPercent(score / maxScore)} %</p>
         </div>
       </div>
-      <SaveRatingToDb
-        ratingCriteria={ratingCriteria}
-        score={score}
-        maxScore={maxScore}
-        symbol={symbol}
-      />
+      <SaveRatingToDb rating={model} symbol={symbol} />
     </div>
   );
 };

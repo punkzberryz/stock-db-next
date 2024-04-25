@@ -11,6 +11,7 @@ const prismadb = globalThis.prisma || new PrismaClient();
 if (process.env.NODE_ENV !== "production") globalThis.prisma = prismadb;
 
 const prismaAdapter = new PrismaAdapter(prismadb.session, prismadb.user);
+
 export { prismadb, prismaAdapter };
 
 export enum PrismaClientErrorCode {

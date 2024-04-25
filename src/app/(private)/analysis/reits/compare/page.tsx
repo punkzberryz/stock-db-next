@@ -1,8 +1,8 @@
-import { getAllReitsRating } from "@/action/stock/stock-action/reits-analysis";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import DataTable from "@/components/Table/data-table";
 import { BadRequestError } from "@/lib/error";
 import { reitsRatingCompareColumns } from "./components/column-def";
+import { getAllReitsRating } from "@/action/stock/reits";
 
 const CompareReitsPage = async () => {
   //We compare reits rating saved in the database

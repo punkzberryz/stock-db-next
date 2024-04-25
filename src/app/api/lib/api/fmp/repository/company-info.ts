@@ -4,13 +4,14 @@ import {
   responseErrorHelper,
 } from "@/lib/error";
 import { FMP_URL } from "../config";
+import { CompanyProfile } from "@prisma/client";
 
 export class FmpApiCompanyInfo {
   private apiKey: string;
   constructor(apiKey: string) {
     this.apiKey = apiKey;
   }
-  async getProfile(symbol: string) {
+  async getProfile(symbol: string): Promise<CompanyProfile> {
     try {
       const resp = await fetch(
         `${FMP_URL}/profile/${symbol}?apikey=${this.apiKey}`
@@ -30,7 +31,7 @@ export class FmpApiCompanyInfo {
   }
 }
 
-const makeProfile = (companyProfile: FmpCompanyProfile): GetProfile => {
+const makeProfile = (companyProfile: FmpCompanyProfile): CompanyProfile => {
   return {
     symbol: companyProfile.symbol,
     price: companyProfile.price,
@@ -48,6 +49,8 @@ const makeProfile = (companyProfile: FmpCompanyProfile): GetProfile => {
     dcf: companyProfile.dcf,
     image: companyProfile.image,
     ipoDate: companyProfile.ipoDate,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 };
 type GetProfile = {

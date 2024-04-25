@@ -1,7 +1,7 @@
 include .env
 
-compose-build:
-	docker-compose -f docker-compose.dev.yml up
+compose:
+	docker-compose -f docker-compose.dev.yml up -d
 compose-down:
 	docker-compose -f docker-compose.dev.yml down
 db-login:

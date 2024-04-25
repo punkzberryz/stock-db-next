@@ -91,6 +91,7 @@ export type Info = {
   symbol: string;
   marketCap: number;
   sharesOutstanding: number;
+  price: number;
 };
 
 const example_sictBk: YahooQuoteResponse = {
