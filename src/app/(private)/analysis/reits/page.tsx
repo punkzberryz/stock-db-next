@@ -4,7 +4,6 @@ import { keyMetricsColumns } from "./components/table/keymetrics-column-def";
 import { DividendChart, YearlyDividendChart } from "./components/charts";
 import Client from "./components/client";
 import ReitsRatingModel from "./components/reits-rating-model";
-import { SaveToDb } from "./components/save-to-db";
 import DataTable from "@/components/Table/data-table";
 import { formatDateString, valueToPercent } from "@/lib/format";
 import { fundamentalColumns } from "./components/table/fundamental-column-def";
@@ -20,6 +19,8 @@ import {
 } from "@/action/stock/reits";
 import { makeDividendPerYear } from "@/action/stock/dividend-service";
 import { fetchQuote } from "@/action/stock/quote-repo";
+import SaveToDb from "@/components/save-to-db/save-to-db";
+import { metadataHelper } from "@/lib/metadata";
 
 interface ReitsAnalysisPageProps {
   searchParams: {
@@ -83,12 +84,13 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
       <YearlyDividendChart data={yearlyDividends} />
       <DividendChart data={dividendsChartData} />
       <ReitsRatingModel model={reitsRating} symbol={profile.symbol} />
-      <Client />
       <SaveToDb
-        profile={profile}
+        dividends={dividends}
         financials={financials}
         reitsKeyMetrics={keymetrics}
-        dividends={dividends}
+        profile={profile}
+        symbol={profile.symbol}
+        reitsRating={reitsRating}
       />
 
       {ratings && ratings.length ? (
@@ -110,8 +112,13 @@ const ReitsAnalysisPage = async ({ searchParams }: ReitsAnalysisPageProps) => {
           ))}
         </div>
       ) : null}
+      <Client />
     </MaxWidthWrapper>
   );
 };
 
 export default ReitsAnalysisPage;
+export const metadata = metadataHelper({
+  title: "Reits Analysis",
+  description: "Reits Analysis",
+});

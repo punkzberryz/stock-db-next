@@ -1,6 +1,6 @@
 "use server";
 
-import { catchErrorForServerActionHelper } from "@/lib/error";
+import { catchErrorForServerActionHelper } from "@/lib/error/catch-error-action-helper";
 import { Info, YahooQuoteResponse } from "@/schema/stock/info.schema";
 import yahooFinance from "yahoo-finance2";
 

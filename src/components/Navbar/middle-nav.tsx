@@ -61,6 +61,14 @@ const links: LinkType[] = [
     ],
   },
   {
+    title: "Portfolio",
+    href: "/portfolio",
+  },
+  {
+    title: "Transaction",
+    href: "/transaction",
+  },
+  {
     title: "Me",
     href: "/me",
   },

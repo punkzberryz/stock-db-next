@@ -16,14 +16,15 @@ datasource db {
 }
 
 model User {
-  id             String    @id
-  email          String    @unique
+  id             String        @id
+  email          String        @unique
   hashedPassword String
   displayName    String
-  role           Role      @default(USER)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  role           Role          @default(USER)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   sessions       Session[]
+  Transactions   Transaction[]
 
   @@index([email])
 }
@@ -186,4 +187,33 @@ model ReitsRating {
   updatedAt      DateTime @updatedAt
 
   @@index([symbol])
+}
+
+enum Currency {
+  USD
+  THB
+  SGD
+}
+
+enum TransactionType {
+  buy
+  sell
+  dividend
+}
+
+// PORTFOLIO
+model Transaction {
+  id        Int             @id @default(autoincrement())
+  ticker    String
+  currency  Currency
+  type      TransactionType
+  date      DateTime        @db.Date
+  price     Float
+  unit      Float
+  fee       Float
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime        @default(now())
+
+  @@index([userId])
 }

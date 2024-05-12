@@ -25,10 +25,12 @@ const AuthNav = () => {
 
 const AuthNavDropdown = ({ user }: { user: UserWithoutPassword }) => {
   const router = useRouter();
+  const { clearUser } = useAuthStore();
   const handleSignOut = async () => {
     console.log("sign out");
     try {
       await signOut();
+      clearUser();
       router.push("/auth/signin");
       router.refresh();
       toast.success("Sign out successfully");

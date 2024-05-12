@@ -10,6 +10,7 @@ import { fundamentalColumns } from "./components/table/fundamental-column-def";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import SearchForStockInput from "@/components/search-for-stock";
+import SaveToDb from "@/components/save-to-db/save-to-db";
 
 interface FundamentalPageProps {
   searchParams: {
@@ -26,7 +27,6 @@ const FundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
   const currency = getCurrencyFromSymbol(ticker);
 
   //1) Get all required results from database or api
-  const [] = await Promise.all([]);
   const { profile, financials } = await fetchDataForFundamental(ticker);
   //2) calculate values that we need
   const fundamentalTable = makeFundamentalTableData(financials, currency);
@@ -48,6 +48,7 @@ const FundamentalPage = async ({ searchParams }: FundamentalPageProps) => {
       />
       {/* Action Buttons */}
       <div className="flex flex-col gap-4">
+        <SaveToDb profile={profile} financials={financials} symbol={ticker} />
         <Link
           href={`/analysis/dcf?ticker=${ticker}`}
           className={buttonVariants({

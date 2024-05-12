@@ -1,6 +1,6 @@
 "use server";
 
-import { catchErrorForServerActionHelper } from "@/lib/error";
+import { catchErrorForServerActionHelper } from "@/lib/error/catch-error-action-helper";
 import { prismadb } from "@/lib/prismadb";
 import { ReitsRatingCriteria } from "./rating-service";
 

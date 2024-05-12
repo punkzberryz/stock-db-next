@@ -6,13 +6,14 @@ import { PriceToFCFChart } from "./components/price-to-fcf-chart";
 import { valueToCurrency } from "@/lib/format";
 import { getSessionId } from "@/lib/auth";
 import Client from "./components/client";
-import SaveToDb from "./components/save-to-db";
 import {
   calculateAverageGrowthRate,
   getValuation,
 } from "@/action/stock/valuation-service";
 import { fetchDataForDcf } from "./actions/fetch-data";
 import { fetchQuote } from "@/action/stock/quote-repo";
+import SaveToDb from "@/components/save-to-db/save-to-db";
+import { metadataHelper } from "@/lib/metadata";
 
 /*
   We should do this sequentially
@@ -91,7 +92,12 @@ const DiscountedCashFlowAnalysisPage = async ({
         </p>
         <p>Today price {valueToCurrency(todayPrice, currency)}</p>
       </div>
-      <SaveToDb ratios={ratios} growths={growths} financials={financials} />
+      <SaveToDb
+        ratios={ratios}
+        growths={growths}
+        financials={financials}
+        symbol={ticker}
+      />
       <Client
         defaultParams={defaultParams}
         initialIntrinsicValue={intrinsicValue}
@@ -102,3 +108,7 @@ const DiscountedCashFlowAnalysisPage = async ({
 };
 
 export default DiscountedCashFlowAnalysisPage;
+export const metadata = metadataHelper({
+  title: "Discounted Cash Flow Analysis",
+  description: "Discounted Cash Flow Analysis",
+});

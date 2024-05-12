@@ -3,7 +3,6 @@ import { prismaAdapter } from "./prismadb";
 import { User } from "@prisma/client";
 import { cache } from "react";
 import { cookies } from "next/headers";
-import { NextFetchEvent, NextRequest } from "next/server";
 import { COOKIE_NAME } from "@/middleware";
 
 export const lucia = new Lucia(prismaAdapter, {

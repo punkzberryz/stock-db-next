@@ -3,6 +3,7 @@ import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import AuthNav from "./auth-nav";
 import MiddleNav from "./middle-nav";
+import ThemeToggleButton from "../theme/theme-toggle-button";
 
 const NavbarContent = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -54,7 +55,8 @@ const PrivateNavbar = () => {
         <MiddleNav />
       </div>
       <div className="w-[250px] flex justify-end">
-        <div className="mr-10">
+        <div className="mr-10 flex space-x-2 items-center">
+          <ThemeToggleButton />
           <AuthNav />
         </div>
       </div>

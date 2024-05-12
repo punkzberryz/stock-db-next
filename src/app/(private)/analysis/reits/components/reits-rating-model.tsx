@@ -1,5 +1,4 @@
 import { valueToPercent } from "@/lib/format";
-import { SaveRatingToDb } from "./save-to-db";
 import { Separator } from "@/components/ui/separator";
 import { ReitsRatingResult } from "@/action/stock/reits";
 
@@ -44,7 +43,6 @@ const ReitsRatingModel = ({ model, symbol }: ReitsRatingModelProps) => {
           <p>{valueToPercent(score / maxScore)} %</p>
         </div>
       </div>
-      <SaveRatingToDb rating={model} symbol={symbol} />
     </div>
   );
 };
