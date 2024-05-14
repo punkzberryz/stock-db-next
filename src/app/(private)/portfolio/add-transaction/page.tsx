@@ -1,16 +1,17 @@
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { metadataHelper } from "@/lib/metadata";
 import Client from "./components/client";
-import { getSessionId, validateRequest } from "@/lib/auth";
+import { validateRequest } from "@/lib/auth";
 import { prismadb } from "@/lib/prismadb";
 import DataTable from "@/components/Table/data-table";
 import { makeTransactionTableData } from "./components/table/format-data";
 import { transactionColumns } from "./components/table/column-def";
+import { UnauthorizedError } from "@/lib/error";
 
 const TransactionPage = async () => {
   const { session } = await validateRequest();
   if (!session) {
-    return;
+    throw new UnauthorizedError();
   }
   //get all transactions
   const transactions = await prismadb.transaction.findMany({

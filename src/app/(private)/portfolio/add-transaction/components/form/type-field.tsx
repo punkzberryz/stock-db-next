@@ -32,7 +32,10 @@ const TypeField = ({
         <FormItem>
           <FormLabel>Type</FormLabel>
           <FormControl>
-            <Select onValueChange={(e) => field.onChange(e)}>
+            <Select
+              onValueChange={(e) => field.onChange(e)}
+              defaultValue={form.getValues("type")}
+            >
               <SelectTrigger className="capitalize">
                 <SelectValue placeholder="Select transaction type" />
               </SelectTrigger>

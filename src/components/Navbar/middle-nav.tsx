@@ -10,7 +10,15 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
-import { LucideIcon, HomeIcon, Building2, Table, Banknote } from "lucide-react";
+import {
+  LucideIcon,
+  HomeIcon,
+  Building2,
+  Table,
+  Banknote,
+  PiggyBank,
+  BadgeDollarSign,
+} from "lucide-react";
 
 type SubLinks = {
   title: string;
@@ -63,10 +71,20 @@ const links: LinkType[] = [
   {
     title: "Portfolio",
     href: "/portfolio",
-  },
-  {
-    title: "Transaction",
-    href: "/transaction",
+    sublinks: [
+      {
+        href: "/",
+        title: "Portfolio",
+        description: "Portfolio page",
+        icon: PiggyBank,
+      },
+      {
+        href: "/add-transaction",
+        title: "Add Transaction",
+        description: "Add transaction page",
+        icon: BadgeDollarSign,
+      },
+    ],
   },
   {
     title: "Me",

@@ -3,7 +3,7 @@ import { Currency } from "../get-currency";
 export const formatCurrency = (
   value: number,
   options: {
-    currency?: "USD" | "THB" | "SGD";
+    currency?: Currency;
     notation?: Intl.NumberFormatOptions["notation"];
     maximumFractionDigits?: number;
     style?: Intl.NumberFormatOptions["style"];

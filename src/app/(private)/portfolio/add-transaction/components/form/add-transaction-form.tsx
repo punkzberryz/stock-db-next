@@ -32,6 +32,8 @@ const AddTransactionForm = ({ setOpenMoal }: AddTransactionFormProps) => {
       fee: 0,
       date: new Date(),
       ticker: "",
+      type: "buy",
+      currency: "USD",
     },
   });
   const onSubmit = async (data: AddTransactionFormSchema) => {
