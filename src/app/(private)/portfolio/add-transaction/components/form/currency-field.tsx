@@ -34,8 +34,6 @@ const CurrencyField = ({
   useEffect(() => {
     if (ticker) {
       const getCurrency = getCurrencyFromSymbol(ticker);
-      console.log("ticker", ticker);
-      console.log("currency", currency);
       form.setValue("currency", getCurrency);
     }
   }, [ticker, form]);
