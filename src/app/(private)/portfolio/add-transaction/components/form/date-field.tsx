@@ -1,6 +1,6 @@
 "use client";
-import { UseFormReturn } from "react-hook-form";
-import { AddTransactionFormSchema } from "./add-transaction.schema";
+import { UseFormReturn, useWatch } from "react-hook-form";
+import { TransactionFormSchema } from "./transaction.schema";
 import {
   FormControl,
   FormField,
@@ -9,15 +9,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
+import { addHours } from "date-fns";
 
 const DateField = ({
   form,
 }: {
-  form: UseFormReturn<AddTransactionFormSchema>;
+  form: UseFormReturn<TransactionFormSchema>;
 }) => {
-  const [date, setDate] = useState<Date | undefined>(form.getValues("date"));
-
+  // const [date, setDate] = useState<Date | undefined>(form.getValues("date"));
+  const date = useWatch({ control: form.control, name: "date" });
   return (
     <FormField
       control={form.control}
@@ -25,13 +25,13 @@ const DateField = ({
       render={({ field }) => (
         <FormItem>
           <FormLabel>Date</FormLabel>
+          {date?.toString()}
           <FormControl>
             <Calendar
               selected={date}
               onSelect={(date) => {
                 if (!date) return;
-                setDate(date);
-                field.onChange(date);
+                field.onChange(addHours(date, 8));
               }}
               mode="single"
               className="border rounded-md w-fit"

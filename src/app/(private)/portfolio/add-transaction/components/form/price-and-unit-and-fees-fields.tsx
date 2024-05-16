@@ -1,6 +1,6 @@
 "use client";
 import { UseFormReturn, useWatch } from "react-hook-form";
-import { AddTransactionFormSchema } from "./add-transaction.schema";
+import { TransactionFormSchema } from "./transaction.schema";
 import {
   FormControl,
   FormField,
@@ -9,13 +9,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { formatCurrency } from "@/lib/format";
 
 const PriceUnitAndFeeFiels = ({
   form,
 }: {
-  form: UseFormReturn<AddTransactionFormSchema>;
+  form: UseFormReturn<TransactionFormSchema>;
 }) => {
   const [fee, price, unit, currency] = useWatch({
     control: form.control,

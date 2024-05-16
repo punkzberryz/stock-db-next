@@ -1,9 +1,6 @@
 "use client";
 import { UseFormReturn, useWatch } from "react-hook-form";
-import {
-  AddTransactionFormSchema,
-  currencyTypes,
-} from "./add-transaction.schema";
+import { TransactionFormSchema, currencyTypes } from "./transaction.schema";
 import {
   FormControl,
   FormField,
@@ -24,7 +21,7 @@ import { getCurrencyFromSymbol } from "@/lib/get-currency";
 const CurrencyField = ({
   form,
 }: {
-  form: UseFormReturn<AddTransactionFormSchema>;
+  form: UseFormReturn<TransactionFormSchema>;
 }) => {
   const [ticker, currency] = useWatch({
     control: form.control,

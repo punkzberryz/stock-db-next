@@ -1,7 +1,7 @@
 import { z } from "zod";
 export const transactionTypes = ["buy", "sell", "dividend"] as const;
 export const currencyTypes = ["USD", "SGD", "THB"] as const;
-export const addTransactionFormSchema = z.object({
+export const transactionFormSchema = z.object({
   ticker: z.string().min(1),
   currency: z.enum(currencyTypes),
   type: z.enum(transactionTypes),
@@ -11,4 +11,4 @@ export const addTransactionFormSchema = z.object({
   fee: z.number(),
 });
 
-export type AddTransactionFormSchema = z.infer<typeof addTransactionFormSchema>;
+export type TransactionFormSchema = z.infer<typeof transactionFormSchema>;

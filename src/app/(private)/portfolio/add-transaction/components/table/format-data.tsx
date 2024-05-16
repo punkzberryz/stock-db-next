@@ -3,6 +3,7 @@ import { Transaction } from "@prisma/client";
 
 export const makeTransactionTableData = (data: Transaction[]) => {
   return data.map((d) => ({
+    id: d.id,
     Date: formatDateString(d.date),
     Symbol: d.ticker,
     Type: <span className="capitalize">{d.type}</span>,

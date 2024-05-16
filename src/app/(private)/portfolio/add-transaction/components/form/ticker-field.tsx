@@ -1,6 +1,6 @@
 "use client";
 import { UseFormReturn } from "react-hook-form";
-import { AddTransactionFormSchema } from "./add-transaction.schema";
+import { TransactionFormSchema } from "./transaction.schema";
 import {
   FormControl,
   FormField,
@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 const TickerField = ({
   form,
 }: {
-  form: UseFormReturn<AddTransactionFormSchema>;
+  form: UseFormReturn<TransactionFormSchema>;
 }) => {
   return (
     <FormField

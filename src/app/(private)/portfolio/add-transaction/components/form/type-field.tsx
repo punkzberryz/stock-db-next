@@ -1,9 +1,6 @@
 "use client";
 import { UseFormReturn } from "react-hook-form";
-import {
-  AddTransactionFormSchema,
-  transactionTypes,
-} from "./add-transaction.schema";
+import { TransactionFormSchema, transactionTypes } from "./transaction.schema";
 import {
   FormControl,
   FormField,
@@ -22,7 +19,7 @@ import {
 const TypeField = ({
   form,
 }: {
-  form: UseFormReturn<AddTransactionFormSchema>;
+  form: UseFormReturn<TransactionFormSchema>;
 }) => {
   return (
     <FormField

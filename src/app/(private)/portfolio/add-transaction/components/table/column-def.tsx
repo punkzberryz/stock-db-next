@@ -2,14 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { TransactionTableData } from "./format-data";
+import CellActionButtons from "./cell-action-buttons";
+
 interface HeaderCellProps {
   title: string;
 }
 const HeaderCell = ({ title }: HeaderCellProps) => {
-  return <p className="w-[150px] truncate">{title}</p>;
+  return <p className="w-fit truncate">{title}</p>;
 };
 const CellWrapper = ({ children }: { children?: React.ReactNode }) => {
-  return <div className="w-[100px] text-center">{children}</div>;
+  return <div className="w-fit text-center">{children}</div>;
 };
 
 export const transactionColumns: ColumnDef<TransactionTableData>[] = [
@@ -42,5 +44,10 @@ export const transactionColumns: ColumnDef<TransactionTableData>[] = [
     accessorKey: "Fee",
     header: () => <HeaderCell title="Fee" />,
     cell: ({ row }) => <CellWrapper>{row.original.Fee}</CellWrapper>,
+  },
+  {
+    accessorKey: "action",
+    header: () => <HeaderCell title="Action" />,
+    cell: ({ row }) => <CellActionButtons transactionId={row.original.id} />,
   },
 ];
