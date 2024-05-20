@@ -41,6 +41,11 @@ export const transactionColumns: ColumnDef<TransactionTableData>[] = [
     cell: ({ row }) => <CellWrapper>{row.original.Unit}</CellWrapper>,
   },
   {
+    accessorKey: "Value",
+    header: () => <HeaderCell title="Value" />,
+    cell: ({ row }) => <CellWrapper>{row.original.Value}</CellWrapper>,
+  },
+  {
     accessorKey: "Fee",
     header: () => <HeaderCell title="Fee" />,
     cell: ({ row }) => <CellWrapper>{row.original.Fee}</CellWrapper>,

@@ -25,7 +25,6 @@ const DateField = ({
       render={({ field }) => (
         <FormItem>
           <FormLabel>Date</FormLabel>
-          {date?.toString()}
           <FormControl>
             <Calendar
               selected={date}

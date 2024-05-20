@@ -15,6 +15,10 @@ export const makeTransactionTableData = (data: Transaction[]) => {
       style: "decimal",
       maximumFractionDigits: 1,
     }),
+    Value: formatCurrency(d.price * d.unit, {
+      currency: d.currency,
+      maximumFractionDigits: 1,
+    }),
     Fee: formatCurrency(d.fee, {
       currency: d.currency,
       maximumFractionDigits: 1,

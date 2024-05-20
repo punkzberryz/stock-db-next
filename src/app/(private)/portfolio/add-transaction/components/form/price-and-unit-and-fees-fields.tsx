@@ -92,12 +92,13 @@ const PriceUnitAndFeeFiels = ({
       <div className="flex flex-col gap-2 border p-4 rounded-md">
         <LabelAndText
           label="Value"
-          text={formatCurrency(value, { currency })}
+          text={formatCurrency(value, { currency, notation: "standard" })}
         />
         <LabelAndText
           label="Total Price"
           text={formatCurrency(totalPrice, {
             currency,
+            notation: "standard",
           })}
         />
         <LabelAndText
