@@ -1,5 +1,5 @@
 "use client";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
 import { TransactionFormSchema } from "./transaction.schema";
 import {
   FormControl,
@@ -15,6 +15,22 @@ const TickerField = ({
 }: {
   form: UseFormReturn<TransactionFormSchema>;
 }) => {
+  const ticker = useWatch({ control: form.control, name: "ticker" });
+  if (ticker) {
+    const tickerAndInfo = ticker.split("\t");
+    if (tickerAndInfo.length === 6) {
+      form.setValue("ticker", tickerAndInfo[0]);
+      form.setValue("unit", parseFloat(tickerAndInfo[1]));
+      form.setValue("price", parseFloat(tickerAndInfo[2]));
+      form.setValue("fee", parseFloat(tickerAndInfo[4]));
+      const dateString = tickerAndInfo[5];
+      if (!dateString) return;
+      const [day, month, year] = dateString.split("/");
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      console.log(date);
+      form.setValue("date", date);
+    }
+  }
   return (
     <FormField
       control={form.control}

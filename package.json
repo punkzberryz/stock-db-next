@@ -46,7 +46,7 @@
     "recharts": "^2.12.5",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
-    "yahoo-finance2": "^2.11.2",
+    "yahoo-finance2": "^2.11.3",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },
